@@ -34,29 +34,41 @@ export function fragment(options?: { speed: number }) {
 	const correctedUV = correctUV();
 	const distortedUV = distort(baseUV, 0.12, 0.5, 50);
 
-	// Gamma correction
+	// Gamma correction; convert from sRGB to linear space for accuracy.
 	const correctedColor1 = pow(color1, float(2.2));
 	const correctedColor2 = pow(color2, float(2.2));
 	const correctedColor3 = pow(color3, float(2.2));
 	const correctedColor4 = pow(color4, float(2.2));
 
+	/**
+	 * Bilinear gradient interpolation:
+	 * 1. Horizontal mix top
+	 * 2. Horizontal mix bottom
+	 * 3. Vertical mix
+	 */
 	const gradient1 = mix(correctedColor1, correctedColor2, baseUV.x);
 	const gradient2 = mix(correctedColor4, correctedColor3, baseUV.x);
 	const finalGradient = mix(gradient1, gradient2, baseUV.y);
 
 	const waveX = distortedUV.x.sub(0.5);
 	const waveY = distortedUV.y.sub(0.5);
+
+	// -(y * x + y * x) = -2xy. Creates hyperbolic shapes.
 	const waveInput = waveY.mul(waveX).add(waveY.mul(waveX)).negate();
+
+	// Generates the oscillating wave. The division by 0.025 increases the
+	// spatial frequency (making tight bands).
 	const wave = float(1).add(
-		float(0.5).mul(
-			sin(
-				waveInput.add(time.mul(speed).mul(0.025)).div(0.025), // Speed modulation here
-			),
-		),
+		float(0.5).mul(sin(waveInput.add(time.mul(speed).mul(0.025)).div(0.025))),
 	);
 
+	// Create a vignette-style mask to darken edges or isolate the center.
 	const edge = edgeMask(0.4, 1, 0.2, -0.1);
+
+	// Apply the mask to the wave and boost brightness (mul 1.5).
 	const waveWithEdge = vec3(wave, wave, wave).mul(edge).mul(1.5);
+
+	// Create a secondary accent gradient that fades diagonally.
 	const colorMix = mix(color6.mul(0.01), color5.mul(0.1), baseUV.y.mul(baseUV.x));
 
 	const finalColor = vec4(
@@ -74,7 +86,8 @@ function correctUV() {
 	const baseUV = uv();
 	const offsetUV = vec2(baseUV.x.add(offset.x), baseUV.y.add(offset.y));
 
-	// Correct for aspect ratio by multiplying the x-coordinate by the aspect ratio
+	// Multiply x-coordinate by aspect ratio to maintain 1:1 square scale on
+	// the x-axis
 	return vec2(offsetUV.x.mul(aspectRatio), offsetUV.y);
 }
 
@@ -101,28 +114,25 @@ function distort(uv: Node, intensity: number, frequency: number, speed: number) 
 function edgeMask(inset: number, softness: number, offsetX: number, offsetY: number) {
 	const baseUV = uv();
 
-	// Offset and scale the UV coordinates. The .sub(0.5).mul(2)
-	// transforms the UVs from [0, 1] to [-1, 1]. The offsetX and
-	// offsetY are then applied *before* the scaling, so they operate
-	// in the original [0, 1] UV space.
 	const offsetXNode = float(offsetX);
 	const offsetYNode = float(offsetY);
 
+	// Transform UVs from [0, 1] to [-1, 1]. Apply offsets before scaling so
+	// they move naturally in screen space.
 	const scaledX = baseUV.x.sub(0.5).sub(offsetXNode).mul(2);
 	const scaledY = baseUV.y.sub(0.5).add(offsetYNode).mul(2);
 
-	// Calculate the distance from the center (0, 0) in the scaled UV space.
+	// Euclidean distance from center
 	const distance = scaledX.mul(scaledX).add(scaledY.mul(scaledY)).sqrt();
 
-	// The edge starts at 1 - inset.
-	// The edge ends (goes to 0) at (1 - inset) + softness.
-	// Multiply the distance by (1 + softness) to make the edge
-	// mask slightly "tighter", avoiding artifacts at the corners.
+	// Define the start and end thresholds for the smoothstep function
 	const edgeStart = float(1).sub(float(inset));
 	const edgeEnd = edgeStart.add(float(softness));
 
+	// Scale distance by (1 + softness) to tighten the mask slightly
 	const distanceScaled = distance.mul(float(1).add(float(softness)));
 
+	// Invert smoothstep so center is white (1) and edges are black (0)
 	return float(1).sub(smoothstep(edgeStart, edgeEnd, distanceScaled));
 }
 
@@ -133,15 +143,21 @@ function glow(
 	softness: number,
 	intensity: number,
 ) {
+	// Calculate perceived brightness using the max channel value
 	const brightness = max(max(inputColor.r, inputColor.g), inputColor.b);
 
+	// Calculate glow factor: 0 if below threshold, interpolates up to 1 over
+	// softness range
 	const glowAmount = smoothstep(threshold, threshold + softness, brightness).mul(intensity);
 
 	return inputColor.add(glowColor.mul(glowAmount));
 }
 
 function grain(uv: Node, strength: number) {
+	// The dot product with arbitrarily large vector numbers creates high
+	// frequency variation. sin() creates oscillation, mul() breaks linearity,
+	// fract() keeps just the decimal part (pseudo-random 0-1).
 	return fract(sin(dot(uv, vec2(12.12345, 78.12345))).mul(40000.12345))
 		.mul(strength)
-		.mul(0.10012345);
+		.mul(0.10012345); // Additional scaling to make grain subtle
 }
