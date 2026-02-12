@@ -1,4 +1,3 @@
-import type { ShaderNodeObject } from "three/tsl";
 import type { Node } from "three/webgpu";
 import {
 	color,
@@ -79,12 +78,7 @@ function correctUV() {
 	return vec2(offsetUV.x.mul(aspectRatio), offsetUV.y);
 }
 
-function distort(
-	uv: ShaderNodeObject<Node>,
-	intensity: number,
-	frequency: number,
-	speed: number,
-) {
+function distort(uv: Node, intensity: number, frequency: number, speed: number) {
 	const goldenRatio = speed * 1.618033988749895;
 	const eulerNumber = speed * Math.E;
 
@@ -133,22 +127,20 @@ function edgeMask(inset: number, softness: number, offsetX: number, offsetY: num
 }
 
 function glow(
-	inputColor: ShaderNodeObject<Node>,
-	glowColor: ShaderNodeObject<Node>,
+	inputColor: Node,
+	glowColor: Node,
 	threshold: number,
 	softness: number,
 	intensity: number,
 ) {
 	const brightness = max(max(inputColor.r, inputColor.g), inputColor.b);
 
-	const glowAmount = smoothstep(threshold, threshold + softness, brightness).mul(
-		intensity,
-	);
+	const glowAmount = smoothstep(threshold, threshold + softness, brightness).mul(intensity);
 
 	return inputColor.add(glowColor.mul(glowAmount));
 }
 
-function grain(uv: ShaderNodeObject<Node>, strength: number) {
+function grain(uv: Node, strength: number) {
 	return fract(sin(dot(uv, vec2(12.12345, 78.12345))).mul(40000.12345))
 		.mul(strength)
 		.mul(0.10012345);
