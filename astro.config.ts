@@ -1,11 +1,11 @@
 import fs from "node:fs/promises";
 import cloudflare from "@astrojs/cloudflare";
-import svelte from "@astrojs/svelte";
+import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-	integrations: [svelte()],
+	integrations: [react()],
 	adapter: cloudflare(),
 	vite: {
 		plugins: [
@@ -23,5 +23,11 @@ export default defineConfig({
 				},
 			},
 		],
+		optimizeDeps: {
+			exclude: ["@takumi-rs/core"],
+		},
+		ssr: {
+			external: ["@takumi-rs/core"],
+		},
 	},
 });
