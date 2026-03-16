@@ -24,7 +24,6 @@
 	"dependencies": {
 		"@astrojs/cloudflare": "^13.1.1",
 		"@astrojs/react": "^5.0.0",
-		"@astrojs/svelte": "^8.0.0",
 		"@tailwindcss/vite": "^4.2.1",
 		"@takumi-rs/image-response": "^0.73.1",
 		"@takumi-rs/wasm": "^0.73.1",
