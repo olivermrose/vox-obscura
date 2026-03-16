@@ -10,14 +10,6 @@
 		font-family: "Inter Variable", sans-serif;
 	}
 
-	body::-webkit-scrollbar {
-		width: 8px;
-	}
-
-	body::-webkit-scrollbar-thumb {
-		background: --alpha(var(--color-neutral-700) / 70%);
-	}
-
 	a,
 	.link {
 		color: var(--color-neutral-500);
