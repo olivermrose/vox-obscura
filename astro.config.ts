@@ -2,11 +2,27 @@ import fs from "node:fs/promises";
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 
 export default defineConfig({
 	integrations: [react()],
 	adapter: cloudflare(),
+	fonts: [
+		{
+			provider: fontProviders.fontsource(),
+			name: "Inter",
+			cssVariable: "--font-inter",
+			weights: ["100 900"],
+		},
+		{
+			provider: fontProviders.fontsource(),
+			name: "JetBrains Mono",
+			cssVariable: "--font-jetbrains-mono",
+			weights: ["100 900"],
+			styles: ["normal"],
+			fallbacks: ["monospace"],
+		},
+	],
 	vite: {
 		plugins: [
 			tailwindcss(),

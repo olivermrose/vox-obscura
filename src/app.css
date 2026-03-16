@@ -1,15 +1,12 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@theme {
-	--font-mono: "JetBrains Mono Variable", monospace;
+@theme inline {
+	--font-sans: var(--font-inter);
+	--font-mono: var(--font-jetbrains-mono);
 }
 
 @layer base {
-	body {
-		font-family: "Inter Variable", sans-serif;
-	}
-
 	a,
 	.link {
 		color: var(--color-neutral-500);
