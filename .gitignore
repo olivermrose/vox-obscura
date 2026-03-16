@@ -2,7 +2,7 @@
 dist/
 .output/
 .astro/
-.vercel/
+.wrangler/
 
 # dependencies
 node_modules/

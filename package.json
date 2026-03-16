@@ -9,7 +9,8 @@
 		"start": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"astro": "astro"
+		"astro": "astro",
+		"generate-types": "wrangler types"
 	},
 	"prettier": {
 		"tabWidth": 4,
@@ -21,8 +22,8 @@
 		]
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^13.1.1",
 		"@astrojs/svelte": "^8.0.0",
-		"@astrojs/vercel": "^10.0.0",
 		"@resvg/resvg-js": "^2.6.2",
 		"@tailwindcss/vite": "^4.2.1",
 		"astro": "^6.0.4",
@@ -33,7 +34,8 @@
 		"svelte": "^5.53.12",
 		"tailwindcss": "^4.2.1",
 		"three": "^0.183.2",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"wrangler": "^4.73.0"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^7.7.2",

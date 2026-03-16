@@ -1,12 +1,12 @@
 import fs from "node:fs/promises";
+import cloudflare from "@astrojs/cloudflare";
 import svelte from "@astrojs/svelte";
-import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
 	integrations: [svelte()],
-	adapter: vercel(),
+	adapter: cloudflare(),
 	vite: {
 		plugins: [
 			tailwindcss(),
