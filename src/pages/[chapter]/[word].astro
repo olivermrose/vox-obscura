@@ -16,7 +16,7 @@ export function getStaticPaths() {
 				},
 			})),
 		],
-		[]
+		[],
 	);
 }
 
@@ -59,7 +59,7 @@ const types: Record<number, string> = {
 	</div>
 
 	<div class="mx-auto flex h-svh max-w-3xl flex-col items-center justify-center px-4">
-		<dl class="prose prose-neutral !prose-invert max-w-[inherit] *:opacity-0">
+		<dl class="prose prose-neutral prose-invert max-w-[inherit] *:opacity-0">
 			<dt class="part">
 				<dfn class="not-italic">
 					<h1 class="mb-0">{currentWord.name}</h1>
@@ -81,8 +81,7 @@ const types: Record<number, string> = {
 
 		{currentWord.audio && <Audio slug={currentWord.slug} />}
 
-		<div class="part my-6 h-px w-full bg-neutral-100/10 opacity-0" role="separator">
-		</div>
+		<div class="part my-6 h-px w-full bg-neutral-100/10 opacity-0" role="separator"></div>
 
 		<nav class="part flex w-full justify-between font-mono text-sm opacity-0">
 			<a href={prev.slug}>&lt;[ {prev.name}</a>

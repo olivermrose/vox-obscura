@@ -28,9 +28,7 @@ const chapter = dictionary.chapters[Astro.params.chapter!];
 		<div class="ch-intro sticky top-0 flex h-lvh items-center justify-center">
 			<div class="*:overflow-hidden">
 				<div>
-					<span
-						class="ch-number inline-block font-serif text-2xl tracking-wide"
-					>
+					<span class="ch-number inline-block font-serif text-2xl tracking-wide">
 						{romanNumerals[chapter.id]}
 					</span>
 				</div>
@@ -47,14 +45,11 @@ const chapter = dictionary.chapters[Astro.params.chapter!];
 			</div>
 		</div>
 
-		<div
-			id="quotes"
-			class="sticky top-0 -mt-[100vh] flex h-lvh items-center justify-center"
-		>
+		<div id="quotes" class="sticky top-0 -mt-[100vh] flex h-lvh items-center justify-center">
 			<div class="flex flex-col gap-y-6 overflow-hidden">
 				{
 					chapter.quotes.map((quote) => (
-						<figure class="quote prose prose-neutral !prose-invert font-serif opacity-0">
+						<figure class="quote prose prose-neutral prose-invert font-serif opacity-0">
 							<blockquote class="text-neutral-300 not-italic">
 								<p
 									class:list={[
@@ -79,7 +74,7 @@ const chapter = dictionary.chapters[Astro.params.chapter!];
 		{
 			chapter.words.map((word) => (
 				<a
-					class="grid-cell relative aspect-square p-4 break-words transition-colors duration-1000 hover:bg-black/50 hover:duration-0"
+					class="grid-cell relative aspect-square p-4 wrap-break-word transition-colors duration-1000 hover:bg-black/50 hover:duration-0"
 					href={`/${word.chapter}/${word.slug}`}
 				>
 					<span class="text-3xl text-white">{word.name}</span>
@@ -103,7 +98,7 @@ const chapter = dictionary.chapters[Astro.params.chapter!];
 				[".ch-number", { y: ["100%", 0] }, { at: "-0.8", ease: expoInOut }],
 				[".ch-description", { y: ["-100%", 0] }, { at: "-0.8", ease: expoInOut }],
 			],
-			{ duration: 1 }
+			{ duration: 1 },
 		);
 
 		scroll(
@@ -114,7 +109,7 @@ const chapter = dictionary.chapters[Astro.params.chapter!];
 			{
 				target: intro,
 				offset: ["start start", "end end"],
-			}
+			},
 		);
 	});
 </script>
